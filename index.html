@@ -12,9 +12,7 @@
     height: 100vh;
     overflow: hidden;
     background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   }
 
   /* -- Background -- */
@@ -26,15 +24,16 @@
     animation: fadeIn 1.5s 0.3s forwards;
   }
 
-  /* -- Stage: fixed square, same on all devices -- */
+  /* -- Stage: center pattern -- */
   .stage {
-    position: relative;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
     width: 92vmin;
     height: 92vmin;
     z-index: 1;
   }
 
-  /* -- Spin wrapper -- */
   .spin-wrapper {
     width: 100%;
     height: 100%;
@@ -42,11 +41,9 @@
     animation: slowSpin 30s linear 5s infinite;
   }
 
-  /* -- Layer 1: Center disc (smallest, appears first) -- */
   .disc {
     position: absolute;
-    width: 28%;
-    height: 28%;
+    width: 28%; height: 28%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/disc.png') center/contain no-repeat;
@@ -54,11 +51,9 @@
     z-index: 3;
   }
 
-  /* -- Layer 2: Bird ring (medium, appears second) -- */
   .birds {
     position: absolute;
-    width: 58%;
-    height: 58%;
+    width: 58%; height: 58%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/birds.png') center/contain no-repeat;
@@ -66,59 +61,82 @@
     z-index: 2;
   }
 
-  /* -- Layer 3: Four flowers (largest, appears last, equal size/distance) -- */
   .flower {
     position: absolute;
-    width: 32%;
-    height: 32%;
+    width: 32%; height: 32%;
     background: url('assets/flower.png') center/contain no-repeat;
     opacity: 0;
     z-index: 1;
   }
-
   .flower-top {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
     animation: flyFromTop 1.2s 3s forwards;
   }
-
   .flower-right {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
     animation: flyFromRight 1.2s 3s forwards;
   }
-
   .flower-bottom {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
     animation: flyFromBottom 1.2s 3s forwards;
   }
-
   .flower-left {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
     animation: flyFromLeft 1.2s 3s forwards;
   }
 
-  /* -- Text -- */
-  .loading-hint {
+  /* ====== Four corner posters ====== */
+  .poster {
     position: fixed;
-    bottom: 8vh;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(200, 180, 140, 0.8);
-    font-size: 14px;
-    letter-spacing: 4px;
-    z-index: 10;
-    animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards;
+    z-index: 5;
     opacity: 0;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
+  .poster img {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid rgba(200, 180, 140, 0.2);
+  }
+
+  .poster .caption {
+    color: rgba(200, 180, 140, 0.85);
+    font-size: clamp(8px, 1.5vmin, 12px);
+    text-align: center;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    line-height: 1.4;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  }
+
+  /* Size: fit in corners without overlapping center */
+  .poster { width: 18vmin; }
+
+  /* Positions */
+  .poster-tl { top: 6vh; left: 5vw; animation: fadeIn 0.8s 5.5s forwards; }
+  .poster-tr { top: 6vh; right: 5vw; animation: fadeIn 0.8s 6s forwards; }
+  .poster-bl { bottom: 6vh; left: 5vw; animation: fadeIn 0.8s 6.5s forwards; }
+  .poster-br { bottom: 6vh; right: 5vw; animation: fadeIn 0.8s 7s forwards; }
+
+  /* Mobile */
+  @media (max-aspect-ratio: 3/4) {
+    .poster { width: 22vw; }
+    .poster-tl { top: 5vh; left: 6vw; }
+    .poster-tr { top: 5vh; right: 6vw; }
+    .poster-bl { bottom: 5vh; left: 6vw; }
+    .poster-br { bottom: 5vh; right: 6vw; }
+  }
+
+  /* -- Text overlays -- */
   .title {
     position: fixed;
-    top: 4vh;
-    left: 50%;
+    top: 2vh; left: 50%;
     transform: translateX(-50%);
     color: rgba(200, 180, 140, 0.9);
     font-size: 18px;
@@ -126,14 +144,12 @@
     z-index: 10;
     opacity: 0;
     animation: fadeIn 1.5s 5s forwards;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
     text-shadow: 0 0 20px rgba(100, 200, 180, 0.3);
   }
 
   .subtitle {
     position: fixed;
-    bottom: 4vh;
-    left: 50%;
+    bottom: 2vh; left: 50%;
     transform: translateX(-50%);
     color: rgba(200, 180, 140, 0.6);
     font-size: 12px;
@@ -141,46 +157,45 @@
     z-index: 10;
     opacity: 0;
     animation: fadeIn 1.5s 5.5s forwards;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
     white-space: nowrap;
   }
 
+  .loading-hint {
+    position: fixed;
+    bottom: 8vh; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(200, 180, 140, 0.8);
+    font-size: 14px;
+    letter-spacing: 4px;
+    z-index: 20;
+    animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards;
+    opacity: 0;
+  }
+
   /* ====== Keyframes ====== */
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
-  @keyframes fadeOut {
-    to { opacity: 0; }
-  }
-
+  @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes fadeOut { to { opacity: 0; } }
   @keyframes popIn {
     0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
     60%  { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
   }
-
   @keyframes flyFromTop {
     0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
     100% { transform: translate(-50%, -50%) translateY(-110%) rotate(0deg); opacity: 1; }
   }
-
   @keyframes flyFromRight {
     0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
     100% { transform: translate(-50%, -50%) translateX(110%) rotate(90deg); opacity: 1; }
   }
-
   @keyframes flyFromBottom {
     0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
     100% { transform: translate(-50%, -50%) translateY(110%) rotate(180deg); opacity: 1; }
   }
-
   @keyframes flyFromLeft {
     0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
     100% { transform: translate(-50%, -50%) translateX(-110%) rotate(270deg); opacity: 1; }
   }
-
   @keyframes slowSpin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
@@ -189,30 +204,42 @@
 </head>
 <body>
 
-  <!-- Background layer -->
   <div class="bg"></div>
 
-  <!-- Animation stage -->
+  <!-- Center pattern -->
   <div class="stage">
     <div class="spin-wrapper">
-      <!-- Layer 3: Four flowers (outermost, last to appear) -->
       <div class="flower flower-top"></div>
       <div class="flower flower-right"></div>
       <div class="flower flower-bottom"></div>
       <div class="flower flower-left"></div>
-
-      <!-- Layer 2: Bird ring (middle) -->
       <div class="birds"></div>
-
-      <!-- Layer 1: Center disc (smallest, first to appear) -->
       <div class="disc"></div>
     </div>
   </div>
 
-  <!-- Text overlays -->
-  <div class="loading-hint">纹样绽放中...</div>
+  <!-- Four corner posters -->
+  <div class="poster poster-tl">
+    <img src="assets/poster1.jpg" alt="巫韵祈天">
+    <div class="caption">巫韵祈天 — 巫风浪漫，崇尚自由</div>
+  </div>
+  <div class="poster poster-tr">
+    <img src="assets/poster2.jpg" alt="涅槃创新">
+    <div class="caption">涅槃创新 — 凤凰涅槃，传承创新</div>
+  </div>
+  <div class="poster poster-bl">
+    <img src="assets/poster3.jpg" alt="飨神祈年">
+    <div class="caption">飨神祈年 — 祭祀舞韵，通天达地</div>
+  </div>
+  <div class="poster poster-br">
+    <img src="assets/poster4.jpg" alt="寿春楚韵">
+    <div class="caption">寿春楚韵 — 尚和贵诚，天人合一</div>
+  </div>
+
+  <!-- Text -->
   <div class="title">涅 槃 创 新</div>
   <div class="subtitle">寿县楚文化博物馆文创设计</div>
+  <div class="loading-hint">纹样绽放中...</div>
 
 </body>
 </html>
