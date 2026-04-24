@@ -26,97 +26,81 @@
     animation: fadeIn 1.5s 0.3s forwards;
   }
 
-  /* -- Stage: holds all pattern layers, fill the screen -- */
+  /* -- Stage: fixed square, same on all devices -- */
   .stage {
     position: relative;
-    width: 96vw;
-    height: 96vw;
-    max-width: 96vh;
-    max-height: 96vh;
+    width: 92vmin;
+    height: 92vmin;
     z-index: 1;
   }
 
-  /* Mobile portrait: scale up to fill screen */
-  @media (max-aspect-ratio: 1/1) {
-    .stage {
-      width: 130vw;
-      height: 130vw;
-      max-width: none;
-      max-height: none;
-    }
-  }
-
-  /* -- Spin wrapper: everything inside rotates after assembly -- */
+  /* -- Spin wrapper -- */
   .spin-wrapper {
     width: 100%;
     height: 100%;
     position: relative;
-    animation: slowSpin 30s linear 5.5s infinite;
+    animation: slowSpin 30s linear 5s infinite;
   }
 
-  /* -- Center disc -- */
+  /* -- Layer 1: Center disc (smallest, appears first) -- */
   .disc {
     position: absolute;
-    width: 42%;
-    height: 42%;
+    width: 28%;
+    height: 28%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/disc.png') center/contain no-repeat;
-    animation: popIn 1s 3.8s forwards;
+    animation: popIn 1s 1s forwards;
     z-index: 3;
   }
 
-  /* -- Bird ring -- */
+  /* -- Layer 2: Bird ring (medium, appears second) -- */
   .birds {
     position: absolute;
-    width: 68%;
-    height: 68%;
+    width: 58%;
+    height: 58%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/birds.png') center/contain no-repeat;
-    animation: popIn 1s 3s forwards;
+    animation: popIn 1s 2s forwards;
     z-index: 2;
   }
 
-  /* -- Four corner flowers -- */
+  /* -- Layer 3: Four flowers (largest, appears last, equal size/distance) -- */
   .flower {
     position: absolute;
-    width: 35%;
-    height: 35%;
+    width: 32%;
+    height: 32%;
     background: url('assets/flower.png') center/contain no-repeat;
     opacity: 0;
     z-index: 1;
   }
 
-  /* Top */
   .flower-top {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
-    animation: flyFromTop 1.2s 1.5s forwards;
+    animation: flyFromTop 1.2s 3s forwards;
   }
 
-  /* Right */
   .flower-right {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
-    animation: flyFromRight 1.2s 1.8s forwards;
+    animation: flyFromRight 1.2s 3s forwards;
   }
 
-  /* Bottom */
   .flower-bottom {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
-    animation: flyFromBottom 1.2s 2.1s forwards;
+    animation: flyFromBottom 1.2s 3s forwards;
   }
 
-  /* Left */
   .flower-left {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
-    animation: flyFromLeft 1.2s 2.4s forwards;
+    animation: flyFromLeft 1.2s 3s forwards;
   }
 
-  /* -- Loading text -- */
+  /* -- Text -- */
   .loading-hint {
     position: fixed;
     bottom: 8vh;
@@ -126,7 +110,7 @@
     font-size: 14px;
     letter-spacing: 4px;
     z-index: 10;
-    animation: fadeIn 1s 0.5s forwards, fadeOut 1s 5s forwards;
+    animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards;
     opacity: 0;
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   }
@@ -141,7 +125,7 @@
     letter-spacing: 6px;
     z-index: 10;
     opacity: 0;
-    animation: fadeIn 1.5s 5.5s forwards;
+    animation: fadeIn 1.5s 5s forwards;
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
     text-shadow: 0 0 20px rgba(100, 200, 180, 0.3);
   }
@@ -156,7 +140,7 @@
     letter-spacing: 3px;
     z-index: 10;
     opacity: 0;
-    animation: fadeIn 1.5s 6s forwards;
+    animation: fadeIn 1.5s 5.5s forwards;
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
     white-space: nowrap;
   }
@@ -179,22 +163,22 @@
 
   @keyframes flyFromTop {
     0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(-105%) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(-110%) rotate(0deg); opacity: 1; }
   }
 
   @keyframes flyFromRight {
     0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(105%) rotate(90deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateX(110%) rotate(90deg); opacity: 1; }
   }
 
   @keyframes flyFromBottom {
     0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(105%) rotate(180deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(110%) rotate(180deg); opacity: 1; }
   }
 
   @keyframes flyFromLeft {
     0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(-105%) rotate(270deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateX(-110%) rotate(270deg); opacity: 1; }
   }
 
   @keyframes slowSpin {
@@ -211,16 +195,16 @@
   <!-- Animation stage -->
   <div class="stage">
     <div class="spin-wrapper">
-      <!-- Four flowers from 4 directions -->
+      <!-- Layer 3: Four flowers (outermost, last to appear) -->
       <div class="flower flower-top"></div>
       <div class="flower flower-right"></div>
       <div class="flower flower-bottom"></div>
       <div class="flower flower-left"></div>
 
-      <!-- Bird ring -->
+      <!-- Layer 2: Bird ring (middle) -->
       <div class="birds"></div>
 
-      <!-- Center disc -->
+      <!-- Layer 1: Center disc (smallest, first to appear) -->
       <div class="disc"></div>
     </div>
   </div>
