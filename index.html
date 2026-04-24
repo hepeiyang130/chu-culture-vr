@@ -319,7 +319,9 @@
   <button class="music-btn" id="musicBtn" title="音乐开关">♫</button>
 
   <!-- Audio -->
-  <audio id="bgm" loop preload="auto" src="assets/bgm.wav"></audio>
+  <audio id="bgm" loop preload="auto">
+    <source src="assets/bgm.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     const entry = document.getElementById('entry');
@@ -328,18 +330,39 @@
     const musicBtn = document.getElementById('musicBtn');
     let playing = false;
 
+    // Unlock audio on mobile (needs user gesture)
+    function unlockAudio() {
+      bgm.load();
+      bgm.volume = 0.4;
+      const p = bgm.play();
+      if (p) {
+        p.then(() => {
+          playing = true;
+          musicBtn.classList.add('playing');
+        }).catch(() => {
+          // Retry after a short delay
+          setTimeout(() => {
+            bgm.play().then(() => {
+              playing = true;
+              musicBtn.classList.add('playing');
+            }).catch(() => {});
+          }, 500);
+        });
+      }
+    }
+
     entry.addEventListener('click', () => {
       entry.classList.add('hidden');
       main.classList.add('active');
       musicBtn.classList.add('show');
-
-      bgm.volume = 0.4;
-      bgm.play().then(() => {
-        playing = true;
-        musicBtn.classList.add('playing');
-      }).catch(() => {});
-
+      unlockAudio();
       setTimeout(() => { entry.style.display = 'none'; }, 1000);
+    });
+
+    // Also handle touch for mobile
+    entry.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      entry.click();
     });
 
     musicBtn.addEventListener('click', () => {
