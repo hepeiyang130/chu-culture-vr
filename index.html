@@ -26,12 +26,24 @@
     animation: fadeIn 1.5s 0.3s forwards;
   }
 
-  /* -- Stage: holds all pattern layers -- */
+  /* -- Stage: holds all pattern layers, fill the screen -- */
   .stage {
     position: relative;
-    width: min(90vw, 90vh);
-    height: min(90vw, 90vh);
+    width: 96vw;
+    height: 96vw;
+    max-width: 96vh;
+    max-height: 96vh;
     z-index: 1;
+  }
+
+  /* Mobile portrait: use most of screen width */
+  @media (max-aspect-ratio: 1/1) {
+    .stage {
+      width: 96vw;
+      height: 96vw;
+      max-width: none;
+      max-height: none;
+    }
   }
 
   /* -- Spin wrapper: everything inside rotates after assembly -- */
@@ -42,11 +54,11 @@
     animation: slowSpin 30s linear 5.5s infinite;
   }
 
-  /* -- Center disc (layer 2) -- */
+  /* -- Center disc -- */
   .disc {
     position: absolute;
-    width: 45%;
-    height: 45%;
+    width: 30%;
+    height: 30%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/disc.png') center/contain no-repeat;
@@ -54,11 +66,11 @@
     z-index: 3;
   }
 
-  /* -- Bird ring (layer 3) -- */
+  /* -- Bird ring -- */
   .birds {
     position: absolute;
-    width: 65%;
-    height: 65%;
+    width: 52%;
+    height: 52%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/birds.png') center/contain no-repeat;
@@ -69,35 +81,35 @@
   /* -- Four corner flowers -- */
   .flower {
     position: absolute;
-    width: 30%;
-    height: 30%;
+    width: 28%;
+    height: 28%;
     background: url('assets/flower.png') center/contain no-repeat;
     opacity: 0;
     z-index: 1;
   }
 
-  /* Top: fly in from above */
+  /* Top */
   .flower-top {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
     animation: flyFromTop 1.2s 1.5s forwards;
   }
 
-  /* Right: fly in from right */
+  /* Right */
   .flower-right {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
     animation: flyFromRight 1.2s 1.8s forwards;
   }
 
-  /* Bottom: fly in from below */
+  /* Bottom */
   .flower-bottom {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
     animation: flyFromBottom 1.2s 2.1s forwards;
   }
 
-  /* Left: fly in from left */
+  /* Left */
   .flower-left {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
@@ -167,22 +179,22 @@
 
   @keyframes flyFromTop {
     0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(-82%) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(-128%) rotate(0deg); opacity: 1; }
   }
 
   @keyframes flyFromRight {
     0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(82%) rotate(90deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateX(128%) rotate(90deg); opacity: 1; }
   }
 
   @keyframes flyFromBottom {
     0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(82%) rotate(180deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(128%) rotate(180deg); opacity: 1; }
   }
 
   @keyframes flyFromLeft {
     0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(-82%) rotate(270deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateX(-128%) rotate(270deg); opacity: 1; }
   }
 
   @keyframes slowSpin {
