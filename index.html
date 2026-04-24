@@ -15,16 +15,64 @@
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   }
 
+  /* ====== Entry Screen ====== */
+  .entry {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 1s;
+  }
+  .entry.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .entry-title {
+    color: rgba(200, 180, 140, 0.9);
+    font-size: 28px;
+    letter-spacing: 10px;
+    margin-bottom: 40px;
+    text-shadow: 0 0 30px rgba(100, 200, 180, 0.3);
+  }
+  .entry-btn {
+    color: rgba(200, 180, 140, 0.7);
+    font-size: 16px;
+    letter-spacing: 4px;
+    border: 1px solid rgba(200, 180, 140, 0.3);
+    padding: 12px 36px;
+    border-radius: 30px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .entry-sub {
+    color: rgba(200, 180, 140, 0.4);
+    font-size: 12px;
+    margin-top: 16px;
+    letter-spacing: 2px;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* ====== Main content (paused until entry click) ====== */
+  .main-content { visibility: hidden; }
+  .main-content.active { visibility: visible; }
+
   /* -- Background -- */
   .bg {
     position: fixed;
     inset: 0;
     background: url('assets/bg.jpg') center/cover no-repeat;
     opacity: 0;
-    animation: fadeIn 1.5s 0.3s forwards;
   }
+  .active .bg { animation: fadeIn 1.5s 0.3s forwards; }
 
-  /* -- Stage: center pattern -- */
+  /* -- Stage -- */
   .stage {
     position: fixed;
     top: 50%; left: 50%;
@@ -38,8 +86,8 @@
     width: 100%;
     height: 100%;
     position: relative;
-    animation: slowSpin 30s linear 5s infinite;
   }
+  .active .spin-wrapper { animation: slowSpin 30s linear 5s infinite; }
 
   .disc {
     position: absolute;
@@ -47,9 +95,9 @@
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/disc.png') center/contain no-repeat;
-    animation: popIn 1s 1s forwards;
     z-index: 3;
   }
+  .active .disc { animation: popIn 1s 1s forwards; }
 
   .birds {
     position: absolute;
@@ -57,9 +105,9 @@
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/birds.png') center/contain no-repeat;
-    animation: popIn 1s 2s forwards;
     z-index: 2;
   }
+  .active .birds { animation: popIn 1s 2s forwards; }
 
   .flower {
     position: absolute;
@@ -71,23 +119,23 @@
   .flower-top {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
-    animation: flyFromTop 1.2s 3s forwards;
   }
   .flower-right {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
-    animation: flyFromRight 1.2s 3s forwards;
   }
   .flower-bottom {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
-    animation: flyFromBottom 1.2s 3s forwards;
   }
   .flower-left {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
-    animation: flyFromLeft 1.2s 3s forwards;
   }
+  .active .flower-top { animation: flyFromTop 1.2s 3s forwards; }
+  .active .flower-right { animation: flyFromRight 1.2s 3s forwards; }
+  .active .flower-bottom { animation: flyFromBottom 1.2s 3s forwards; }
+  .active .flower-left { animation: flyFromLeft 1.2s 3s forwards; }
 
   /* ====== Four corner posters ====== */
   .poster {
@@ -98,13 +146,11 @@
     flex-direction: column;
     align-items: center;
   }
-
   .poster img {
     width: 100%;
     border-radius: 4px;
     border: 1px solid rgba(200, 180, 140, 0.2);
   }
-
   .poster .caption {
     color: rgba(200, 180, 140, 0.85);
     font-size: clamp(8px, 1.5vmin, 12px);
@@ -114,17 +160,18 @@
     line-height: 1.4;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
   }
-
-  /* Size: fit in corners without overlapping center */
   .poster { width: 18vmin; }
 
-  /* Positions */
-  .poster-tl { top: 6vh; left: 5vw; animation: fadeIn 0.8s 5.5s forwards; }
-  .poster-tr { top: 6vh; right: 5vw; animation: fadeIn 0.8s 6s forwards; }
-  .poster-bl { bottom: 6vh; left: 5vw; animation: fadeIn 0.8s 6.5s forwards; }
-  .poster-br { bottom: 6vh; right: 5vw; animation: fadeIn 0.8s 7s forwards; }
+  .poster-tl { top: 6vh; left: 5vw; }
+  .poster-tr { top: 6vh; right: 5vw; }
+  .poster-bl { bottom: 6vh; left: 5vw; }
+  .poster-br { bottom: 6vh; right: 5vw; }
 
-  /* Mobile */
+  .active .poster-tl { animation: fadeIn 0.8s 5.5s forwards; }
+  .active .poster-tr { animation: fadeIn 0.8s 6s forwards; }
+  .active .poster-bl { animation: fadeIn 0.8s 6.5s forwards; }
+  .active .poster-br { animation: fadeIn 0.8s 7s forwards; }
+
   @media (max-aspect-ratio: 3/4) {
     .poster { width: 22vw; }
     .poster-tl { top: 5vh; left: 6vw; }
@@ -143,9 +190,9 @@
     letter-spacing: 6px;
     z-index: 10;
     opacity: 0;
-    animation: fadeIn 1.5s 5s forwards;
     text-shadow: 0 0 20px rgba(100, 200, 180, 0.3);
   }
+  .active .title { animation: fadeIn 1.5s 5s forwards; }
 
   .subtitle {
     position: fixed;
@@ -156,9 +203,9 @@
     letter-spacing: 3px;
     z-index: 10;
     opacity: 0;
-    animation: fadeIn 1.5s 5.5s forwards;
     white-space: nowrap;
   }
+  .active .subtitle { animation: fadeIn 1.5s 5.5s forwards; }
 
   .loading-hint {
     position: fixed;
@@ -168,9 +215,29 @@
     font-size: 14px;
     letter-spacing: 4px;
     z-index: 20;
-    animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards;
     opacity: 0;
   }
+  .active .loading-hint { animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards; }
+
+  /* -- Music button -- */
+  .music-btn {
+    position: fixed;
+    bottom: 12px; right: 12px;
+    z-index: 50;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(200, 180, 140, 0.4);
+    background: rgba(0, 0, 0, 0.5);
+    color: rgba(200, 180, 140, 0.8);
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .music-btn.show { display: flex; }
+  .music-btn.playing { animation: spin 3s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ====== Keyframes ====== */
   @keyframes fadeIn { to { opacity: 1; } }
@@ -204,42 +271,91 @@
 </head>
 <body>
 
-  <div class="bg"></div>
+  <!-- Entry screen -->
+  <div class="entry" id="entry">
+    <div class="entry-title">涅 槃 创 新</div>
+    <div class="entry-btn">点 击 进 入</div>
+    <div class="entry-sub">寿县楚文化博物馆文创设计</div>
+  </div>
 
-  <!-- Center pattern -->
-  <div class="stage">
-    <div class="spin-wrapper">
-      <div class="flower flower-top"></div>
-      <div class="flower flower-right"></div>
-      <div class="flower flower-bottom"></div>
-      <div class="flower flower-left"></div>
-      <div class="birds"></div>
-      <div class="disc"></div>
+  <!-- Main content -->
+  <div class="main-content" id="main">
+    <div class="bg"></div>
+
+    <div class="stage">
+      <div class="spin-wrapper">
+        <div class="flower flower-top"></div>
+        <div class="flower flower-right"></div>
+        <div class="flower flower-bottom"></div>
+        <div class="flower flower-left"></div>
+        <div class="birds"></div>
+        <div class="disc"></div>
+      </div>
     </div>
+
+    <div class="poster poster-tl">
+      <img src="assets/poster1.jpg" alt="巫韵祈天">
+      <div class="caption">巫韵祈天 — 巫风浪漫，崇尚自由</div>
+    </div>
+    <div class="poster poster-tr">
+      <img src="assets/poster2.jpg" alt="涅槃创新">
+      <div class="caption">涅槃创新 — 凤凰涅槃，传承创新</div>
+    </div>
+    <div class="poster poster-bl">
+      <img src="assets/poster3.jpg" alt="飨神祈年">
+      <div class="caption">飨神祈年 — 祭祀舞韵，通天达地</div>
+    </div>
+    <div class="poster poster-br">
+      <img src="assets/poster4.jpg" alt="寿春楚韵">
+      <div class="caption">寿春楚韵 — 尚和贵诚，天人合一</div>
+    </div>
+
+    <div class="title">涅 槃 创 新</div>
+    <div class="subtitle">寿县楚文化博物馆文创设计</div>
+    <div class="loading-hint">纹样绽放中...</div>
   </div>
 
-  <!-- Four corner posters -->
-  <div class="poster poster-tl">
-    <img src="assets/poster1.jpg" alt="巫韵祈天">
-    <div class="caption">巫韵祈天 — 巫风浪漫，崇尚自由</div>
-  </div>
-  <div class="poster poster-tr">
-    <img src="assets/poster2.jpg" alt="涅槃创新">
-    <div class="caption">涅槃创新 — 凤凰涅槃，传承创新</div>
-  </div>
-  <div class="poster poster-bl">
-    <img src="assets/poster3.jpg" alt="飨神祈年">
-    <div class="caption">飨神祈年 — 祭祀舞韵，通天达地</div>
-  </div>
-  <div class="poster poster-br">
-    <img src="assets/poster4.jpg" alt="寿春楚韵">
-    <div class="caption">寿春楚韵 — 尚和贵诚，天人合一</div>
-  </div>
+  <!-- Music toggle button -->
+  <button class="music-btn" id="musicBtn" title="音乐开关">♫</button>
 
-  <!-- Text -->
-  <div class="title">涅 槃 创 新</div>
-  <div class="subtitle">寿县楚文化博物馆文创设计</div>
-  <div class="loading-hint">纹样绽放中...</div>
+  <!-- Audio -->
+  <audio id="bgm" loop preload="auto" src="assets/bgm.wav"></audio>
+
+  <script>
+    const entry = document.getElementById('entry');
+    const main = document.getElementById('main');
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    let playing = false;
+
+    entry.addEventListener('click', () => {
+      entry.classList.add('hidden');
+      main.classList.add('active');
+      musicBtn.classList.add('show');
+
+      bgm.volume = 0.4;
+      bgm.play().then(() => {
+        playing = true;
+        musicBtn.classList.add('playing');
+      }).catch(() => {});
+
+      setTimeout(() => { entry.style.display = 'none'; }, 1000);
+    });
+
+    musicBtn.addEventListener('click', () => {
+      if (playing) {
+        bgm.pause();
+        playing = false;
+        musicBtn.classList.remove('playing');
+        musicBtn.textContent = '♪';
+      } else {
+        bgm.play();
+        playing = true;
+        musicBtn.classList.add('playing');
+        musicBtn.textContent = '♫';
+      }
+    });
+  </script>
 
 </body>
 </html>
