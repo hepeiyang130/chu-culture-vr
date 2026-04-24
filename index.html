@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>涅槃创新 — 寿县楚文化博物馆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* -- Background -- */
+  .bg {
+    position: fixed;
+    inset: 0;
+    background: url('assets/bg.jpg') center/cover no-repeat;
+    opacity: 0;
+    animation: fadeIn 1.5s 0.3s forwards;
+  }
+
+  /* -- Stage: holds all pattern layers -- */
+  .stage {
+    position: relative;
+    width: min(90vw, 90vh);
+    height: min(90vw, 90vh);
+    z-index: 1;
+  }
+
+  /* -- Spin wrapper: everything inside rotates after assembly -- */
+  .spin-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: slowSpin 30s linear 5.5s infinite;
+  }
+
+  /* -- Center disc (layer 2) -- */
+  .disc {
+    position: absolute;
+    width: 45%;
+    height: 45%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: url('assets/disc.png') center/contain no-repeat;
+    animation: popIn 1s 3.8s forwards;
+    z-index: 3;
+  }
+
+  /* -- Bird ring (layer 3) -- */
+  .birds {
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: url('assets/birds.png') center/contain no-repeat;
+    animation: popIn 1s 3s forwards;
+    z-index: 2;
+  }
+
+  /* -- Four corner flowers -- */
+  .flower {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    background: url('assets/flower.png') center/contain no-repeat;
+    opacity: 0;
+    z-index: 1;
+  }
+
+  /* Top: fly in from above */
+  .flower-top {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
+    animation: flyFromTop 1.2s 1.5s forwards;
+  }
+
+  /* Right: fly in from right */
+  .flower-right {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
+    animation: flyFromRight 1.2s 1.8s forwards;
+  }
+
+  /* Bottom: fly in from below */
+  .flower-bottom {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
+    animation: flyFromBottom 1.2s 2.1s forwards;
+  }
+
+  /* Left: fly in from left */
+  .flower-left {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
+    animation: flyFromLeft 1.2s 2.4s forwards;
+  }
+
+  /* -- Loading text -- */
+  .loading-hint {
+    position: fixed;
+    bottom: 8vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(200, 180, 140, 0.8);
+    font-size: 14px;
+    letter-spacing: 4px;
+    z-index: 10;
+    animation: fadeIn 1s 0.5s forwards, fadeOut 1s 5s forwards;
+    opacity: 0;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+
+  .title {
+    position: fixed;
+    top: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(200, 180, 140, 0.9);
+    font-size: 18px;
+    letter-spacing: 6px;
+    z-index: 10;
+    opacity: 0;
+    animation: fadeIn 1.5s 5.5s forwards;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    text-shadow: 0 0 20px rgba(100, 200, 180, 0.3);
+  }
+
+  .subtitle {
+    position: fixed;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(200, 180, 140, 0.6);
+    font-size: 12px;
+    letter-spacing: 3px;
+    z-index: 10;
+    opacity: 0;
+    animation: fadeIn 1.5s 6s forwards;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    white-space: nowrap;
+  }
+
+  /* ====== Keyframes ====== */
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; }
+  }
+
+  @keyframes popIn {
+    0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    60%  { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  @keyframes flyFromTop {
+    0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateY(-82%) rotate(0deg); opacity: 1; }
+  }
+
+  @keyframes flyFromRight {
+    0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateX(82%) rotate(90deg); opacity: 1; }
+  }
+
+  @keyframes flyFromBottom {
+    0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateY(82%) rotate(180deg); opacity: 1; }
+  }
+
+  @keyframes flyFromLeft {
+    0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateX(-82%) rotate(270deg); opacity: 1; }
+  }
+
+  @keyframes slowSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Background layer -->
+  <div class="bg"></div>
+
+  <!-- Animation stage -->
+  <div class="stage">
+    <div class="spin-wrapper">
+      <!-- Four flowers from 4 directions -->
+      <div class="flower flower-top"></div>
+      <div class="flower flower-right"></div>
+      <div class="flower flower-bottom"></div>
+      <div class="flower flower-left"></div>
+
+      <!-- Bird ring -->
+      <div class="birds"></div>
+
+      <!-- Center disc -->
+      <div class="disc"></div>
+    </div>
+  </div>
+
+  <!-- Text overlays -->
+  <div class="loading-hint">纹样绽放中...</div>
+  <div class="title">涅 槃 创 新</div>
+  <div class="subtitle">寿县楚文化博物馆文创设计</div>
+
+</body>
+</html>
