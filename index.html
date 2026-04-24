@@ -36,11 +36,11 @@
     z-index: 1;
   }
 
-  /* Mobile portrait: use most of screen width */
+  /* Mobile portrait: scale up to fill screen */
   @media (max-aspect-ratio: 1/1) {
     .stage {
-      width: 96vw;
-      height: 96vw;
+      width: 130vw;
+      height: 130vw;
       max-width: none;
       max-height: none;
     }
@@ -57,8 +57,8 @@
   /* -- Center disc -- */
   .disc {
     position: absolute;
-    width: 30%;
-    height: 30%;
+    width: 42%;
+    height: 42%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/disc.png') center/contain no-repeat;
@@ -69,8 +69,8 @@
   /* -- Bird ring -- */
   .birds {
     position: absolute;
-    width: 52%;
-    height: 52%;
+    width: 68%;
+    height: 68%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     background: url('assets/birds.png') center/contain no-repeat;
@@ -81,8 +81,8 @@
   /* -- Four corner flowers -- */
   .flower {
     position: absolute;
-    width: 28%;
-    height: 28%;
+    width: 35%;
+    height: 35%;
     background: url('assets/flower.png') center/contain no-repeat;
     opacity: 0;
     z-index: 1;
@@ -179,22 +179,22 @@
 
   @keyframes flyFromTop {
     0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(-128%) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(-105%) rotate(0deg); opacity: 1; }
   }
 
   @keyframes flyFromRight {
     0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(128%) rotate(90deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateX(105%) rotate(90deg); opacity: 1; }
   }
 
   @keyframes flyFromBottom {
     0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(128%) rotate(180deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(105%) rotate(180deg); opacity: 1; }
   }
 
   @keyframes flyFromLeft {
     0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(-128%) rotate(270deg); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateX(-105%) rotate(270deg); opacity: 1; }
   }
 
   @keyframes slowSpin {
