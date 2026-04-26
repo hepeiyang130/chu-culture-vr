@@ -15,19 +15,65 @@
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   }
 
+  /* ====== Loading Screen ====== */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s;
+  }
+  .loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .loading-title {
+    color: rgba(200, 180, 140, 0.9);
+    font-size: 24px;
+    letter-spacing: 8px;
+    margin-bottom: 40px;
+    text-shadow: 0 0 30px rgba(100, 200, 180, 0.3);
+  }
+  .progress-bar {
+    width: 60vw;
+    max-width: 280px;
+    height: 3px;
+    background: rgba(200, 180, 140, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(200, 180, 140, 0.6), rgba(100, 200, 180, 0.6));
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .loading-percent {
+    color: rgba(200, 180, 140, 0.5);
+    font-size: 12px;
+    margin-top: 12px;
+    letter-spacing: 2px;
+  }
+
   /* ====== Entry Screen ====== */
   .entry {
     position: fixed;
     inset: 0;
     z-index: 100;
     background: #000;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: opacity 1s;
   }
+  .entry.ready { display: flex; }
   .entry.hidden {
     opacity: 0;
     pointer-events: none;
@@ -59,11 +105,10 @@
     50% { opacity: 1; transform: scale(1.05); }
   }
 
-  /* ====== Main content (paused until entry click) ====== */
+  /* ====== Main content ====== */
   .main-content { visibility: hidden; }
   .main-content.active { visibility: visible; }
 
-  /* -- Background -- */
   .bg {
     position: fixed;
     inset: 0;
@@ -72,7 +117,6 @@
   }
   .active .bg { animation: fadeIn 1.5s 0.3s forwards; }
 
-  /* -- Stage -- */
   .stage {
     position: fixed;
     top: 50%; left: 50%;
@@ -94,7 +138,7 @@
     width: 28%; height: 28%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background: url('assets/disc.png') center/contain no-repeat;
+    background: url('assets/disc.webp') center/contain no-repeat;
     z-index: 3;
   }
   .active .disc { animation: popIn 1s 1s forwards; }
@@ -104,7 +148,7 @@
     width: 58%; height: 58%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background: url('assets/birds.png') center/contain no-repeat;
+    background: url('assets/birds.webp') center/contain no-repeat;
     z-index: 2;
   }
   .active .birds { animation: popIn 1s 2s forwards; }
@@ -112,7 +156,7 @@
   .flower {
     position: absolute;
     width: 32%; height: 32%;
-    background: url('assets/flower.png') center/contain no-repeat;
+    background: url('assets/flower.webp') center/contain no-repeat;
     opacity: 0;
     z-index: 1;
   }
@@ -271,7 +315,14 @@
 </head>
 <body>
 
-  <!-- Entry screen -->
+  <!-- Loading screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-title">涅 槃 创 新</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="loading-percent" id="loadingPercent">加载中 0%</div>
+  </div>
+
+  <!-- Entry screen (hidden until loaded) -->
   <div class="entry" id="entry">
     <div class="entry-title">涅 槃 创 新</div>
     <div class="entry-btn">点 击 进 入</div>
@@ -294,19 +345,19 @@
     </div>
 
     <div class="poster poster-tl">
-      <img src="assets/poster1.jpg" alt="巫韵祈天">
+      <img src="assets/poster1.jpg" alt="巫韵祈天" loading="lazy">
       <div class="caption">巫韵祈天 — 巫风浪漫，崇尚自由</div>
     </div>
     <div class="poster poster-tr">
-      <img src="assets/poster2.jpg" alt="涅槃创新">
+      <img src="assets/poster2.jpg" alt="涅槃创新" loading="lazy">
       <div class="caption">涅槃创新 — 凤凰涅槃，传承创新</div>
     </div>
     <div class="poster poster-bl">
-      <img src="assets/poster3.jpg" alt="飨神祈年">
+      <img src="assets/poster3.jpg" alt="飨神祈年" loading="lazy">
       <div class="caption">飨神祈年 — 祭祀舞韵，通天达地</div>
     </div>
     <div class="poster poster-br">
-      <img src="assets/poster4.jpg" alt="寿春楚韵">
+      <img src="assets/poster4.jpg" alt="寿春楚韵" loading="lazy">
       <div class="caption">寿春楚韵 — 尚和贵诚，天人合一</div>
     </div>
 
@@ -319,28 +370,99 @@
   <button class="music-btn" id="musicBtn" title="音乐开关">♫</button>
 
   <!-- Audio -->
-  <audio id="bgm" loop preload="auto">
+  <audio id="bgm" loop preload="none">
     <source src="assets/bgm.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="narration" preload="none">
+    <source src="assets/narration.mp3" type="audio/mpeg">
   </audio>
 
   <script>
+    const loadingScreen = document.getElementById('loadingScreen');
+    const progressFill = document.getElementById('progressFill');
+    const loadingPercent = document.getElementById('loadingPercent');
     const entry = document.getElementById('entry');
     const main = document.getElementById('main');
     const bgm = document.getElementById('bgm');
+    const narration = document.getElementById('narration');
     const musicBtn = document.getElementById('musicBtn');
     let playing = false;
+    let audioMuted = false;
 
-    // Unlock audio on mobile (needs user gesture)
-    function unlockAudio() {
-      bgm.load();
-      bgm.volume = 0.4;
+    // ====== Preload critical resources ======
+    const criticalImages = [
+      'assets/bg.jpg',
+      'assets/disc.webp',
+      'assets/birds.webp',
+      'assets/flower.webp'
+    ];
+    const totalResources = criticalImages.length + 2; // +2 for bgm and narration audio
+    let loadedCount = 0;
+
+    function updateProgress() {
+      loadedCount++;
+      const pct = Math.round((loadedCount / totalResources) * 100);
+      progressFill.style.width = pct + '%';
+      loadingPercent.textContent = '加载中 ' + pct + '%';
+
+      if (loadedCount >= totalResources) {
+        // All critical resources loaded, show entry screen
+        setTimeout(() => {
+          loadingScreen.classList.add('hidden');
+          entry.classList.add('ready');
+          setTimeout(() => { loadingScreen.style.display = 'none'; }, 800);
+        }, 300);
+      }
+    }
+
+    // Preload images
+    criticalImages.forEach(src => {
+      const img = new Image();
+      img.onload = updateProgress;
+      img.onerror = updateProgress; // Don't block on error
+      img.src = src;
+    });
+
+    // Preload audio files
+    function preloadAudio(audioEl) {
+      audioEl.load();
+      const onReady = () => {
+        audioEl.removeEventListener('canplaythrough', onReady);
+        updateProgress();
+      };
+      audioEl.addEventListener('canplaythrough', onReady);
+      // Timeout fallback: if audio doesn't load in 5s, proceed anyway
+      setTimeout(() => {
+        audioEl.removeEventListener('canplaythrough', onReady);
+        updateProgress();
+      }, 5000);
+    }
+    preloadAudio(bgm);
+    preloadAudio(narration);
+
+    // Timeout fallback: if everything isn't loaded in 10s, show entry anyway
+    setTimeout(() => {
+      if (!entry.classList.contains('ready')) {
+        loadingScreen.classList.add('hidden');
+        entry.classList.add('ready');
+        setTimeout(() => { loadingScreen.style.display = 'none'; }, 800);
+      }
+    }, 10000);
+
+    // ====== Entry click ======
+    function enterMain() {
+      entry.classList.add('hidden');
+      main.classList.add('active');
+      musicBtn.classList.add('show');
+
+      // Play BGM
+      bgm.volume = 0.35;
       const p = bgm.play();
       if (p) {
         p.then(() => {
           playing = true;
           musicBtn.classList.add('playing');
         }).catch(() => {
-          // Retry after a short delay
           setTimeout(() => {
             bgm.play().then(() => {
               playing = true;
@@ -349,30 +471,36 @@
           }, 500);
         });
       }
+
+      // Play narration after 1.5s delay
+      setTimeout(() => {
+        narration.volume = 0.9;
+        narration.play().catch(() => {});
+      }, 1500);
+
+      setTimeout(() => { entry.style.display = 'none'; }, 1000);
     }
 
-    entry.addEventListener('click', () => {
-      entry.classList.add('hidden');
-      main.classList.add('active');
-      musicBtn.classList.add('show');
-      unlockAudio();
-      setTimeout(() => { entry.style.display = 'none'; }, 1000);
-    });
-
-    // Also handle touch for mobile
+    entry.addEventListener('click', enterMain);
     entry.addEventListener('touchend', (e) => {
       e.preventDefault();
-      entry.click();
-    });
+      enterMain();
+    }, { once: true });
 
+    // ====== Music toggle (controls both BGM and narration) ======
     musicBtn.addEventListener('click', () => {
       if (playing) {
         bgm.pause();
+        narration.pause();
         playing = false;
         musicBtn.classList.remove('playing');
         musicBtn.textContent = '♪';
       } else {
         bgm.play();
+        // Only resume narration if it hasn't finished
+        if (narration.currentTime < narration.duration) {
+          narration.play().catch(() => {});
+        }
         playing = true;
         musicBtn.classList.add('playing');
         musicBtn.textContent = '♫';
