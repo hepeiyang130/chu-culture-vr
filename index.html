@@ -15,65 +15,19 @@
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   }
 
-  /* ====== Loading Screen ====== */
-  .loading-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.8s;
-  }
-  .loading-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-  .loading-title {
-    color: rgba(200, 180, 140, 0.9);
-    font-size: 24px;
-    letter-spacing: 8px;
-    margin-bottom: 40px;
-    text-shadow: 0 0 30px rgba(100, 200, 180, 0.3);
-  }
-  .progress-bar {
-    width: 60vw;
-    max-width: 280px;
-    height: 3px;
-    background: rgba(200, 180, 140, 0.15);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, rgba(200, 180, 140, 0.6), rgba(100, 200, 180, 0.6));
-    border-radius: 2px;
-    transition: width 0.3s;
-  }
-  .loading-percent {
-    color: rgba(200, 180, 140, 0.5);
-    font-size: 12px;
-    margin-top: 12px;
-    letter-spacing: 2px;
-  }
-
-  /* ====== Entry Screen ====== */
+  /* ====== Entry Screen (no external resources, instant display) ====== */
   .entry {
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: #000;
-    display: none;
+    background: radial-gradient(ellipse at center, #1a1510 0%, #000 70%);
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 1s;
+    transition: opacity 0.8s;
   }
-  .entry.ready { display: flex; }
   .entry.hidden {
     opacity: 0;
     pointer-events: none;
@@ -112,8 +66,12 @@
   .bg {
     position: fixed;
     inset: 0;
-    background: url('assets/bg.jpg') center/cover no-repeat;
+    /* CSS gradient fallback while bg.jpg loads */
+    background: radial-gradient(ellipse at center, #1a1510 0%, #0a0806 50%, #000 100%);
     opacity: 0;
+  }
+  .bg.loaded {
+    background: url('assets/bg.jpg') center/cover no-repeat;
   }
   .active .bg { animation: fadeIn 1.5s 0.3s forwards; }
 
@@ -133,55 +91,38 @@
   }
   .active .spin-wrapper { animation: slowSpin 30s linear 5s infinite; }
 
-  .disc {
+  .layer {
     position: absolute;
-    width: 28%; height: 28%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background: url('assets/disc.webp') center/contain no-repeat;
-    z-index: 3;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
   }
+  .disc { width: 28%; height: 28%; z-index: 3; }
   .active .disc { animation: popIn 1s 1s forwards; }
-
-  .birds {
-    position: absolute;
-    width: 58%; height: 58%;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    background: url('assets/birds.webp') center/contain no-repeat;
-    z-index: 2;
-  }
+  .birds { width: 58%; height: 58%; z-index: 2; }
   .active .birds { animation: popIn 1s 2s forwards; }
 
   .flower {
     position: absolute;
     width: 32%; height: 32%;
-    background: url('assets/flower.webp') center/contain no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     opacity: 0;
     z-index: 1;
   }
-  .flower-top {
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
-  }
-  .flower-right {
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
-  }
-  .flower-bottom {
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
-  }
-  .flower-left {
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
-  }
-  .active .flower-top { animation: flyFromTop 1.2s 3s forwards; }
-  .active .flower-right { animation: flyFromRight 1.2s 3s forwards; }
+  .flower-top    { top: 50%; left: 50%; transform: translate(-50%,-50%) translateY(-200%); }
+  .flower-right  { top: 50%; left: 50%; transform: translate(-50%,-50%) translateX(200%) rotate(90deg); }
+  .flower-bottom { top: 50%; left: 50%; transform: translate(-50%,-50%) translateY(200%) rotate(180deg); }
+  .flower-left   { top: 50%; left: 50%; transform: translate(-50%,-50%) translateX(-200%) rotate(270deg); }
+  .active .flower-top    { animation: flyFromTop 1.2s 3s forwards; }
+  .active .flower-right  { animation: flyFromRight 1.2s 3s forwards; }
   .active .flower-bottom { animation: flyFromBottom 1.2s 3s forwards; }
-  .active .flower-left { animation: flyFromLeft 1.2s 3s forwards; }
+  .active .flower-left   { animation: flyFromLeft 1.2s 3s forwards; }
 
-  /* ====== Four corner posters ====== */
+  /* ====== Posters ====== */
   .poster {
     position: fixed;
     z-index: 5;
@@ -189,6 +130,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 18vmin;
   }
   .poster img {
     width: 100%;
@@ -204,13 +146,10 @@
     line-height: 1.4;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
   }
-  .poster { width: 18vmin; }
-
   .poster-tl { top: 6vh; left: 5vw; }
   .poster-tr { top: 6vh; right: 5vw; }
   .poster-bl { bottom: 6vh; left: 5vw; }
   .poster-br { bottom: 6vh; right: 5vw; }
-
   .active .poster-tl { animation: fadeIn 0.8s 5.5s forwards; }
   .active .poster-tr { animation: fadeIn 0.8s 6s forwards; }
   .active .poster-bl { animation: fadeIn 0.8s 6.5s forwards; }
@@ -224,7 +163,6 @@
     .poster-br { bottom: 5vh; right: 6vw; }
   }
 
-  /* -- Text overlays -- */
   .title {
     position: fixed;
     top: 2vh; left: 50%;
@@ -263,7 +201,6 @@
   }
   .active .loading-hint { animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards; }
 
-  /* -- Music button -- */
   .music-btn {
     position: fixed;
     bottom: 12px; right: 12px;
@@ -283,29 +220,28 @@
   .music-btn.playing { animation: spin 3s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ====== Keyframes ====== */
   @keyframes fadeIn { to { opacity: 1; } }
   @keyframes fadeOut { to { opacity: 0; } }
   @keyframes popIn {
-    0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-    60%  { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 0; }
+    60%  { transform: translate(-50%,-50%) scale(1.08); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
   }
   @keyframes flyFromTop {
-    0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(-110%) rotate(0deg); opacity: 1; }
+    0%   { transform: translate(-50%,-50%) translateY(-200%); opacity: 0; }
+    100% { transform: translate(-50%,-50%) translateY(-110%); opacity: 1; }
   }
   @keyframes flyFromRight {
-    0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(110%) rotate(90deg); opacity: 1; }
+    0%   { transform: translate(-50%,-50%) translateX(200%) rotate(90deg); opacity: 0; }
+    100% { transform: translate(-50%,-50%) translateX(110%) rotate(90deg); opacity: 1; }
   }
   @keyframes flyFromBottom {
-    0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateY(110%) rotate(180deg); opacity: 1; }
+    0%   { transform: translate(-50%,-50%) translateY(200%) rotate(180deg); opacity: 0; }
+    100% { transform: translate(-50%,-50%) translateY(110%) rotate(180deg); opacity: 1; }
   }
   @keyframes flyFromLeft {
-    0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
-    100% { transform: translate(-50%, -50%) translateX(-110%) rotate(270deg); opacity: 1; }
+    0%   { transform: translate(-50%,-50%) translateX(-200%) rotate(270deg); opacity: 0; }
+    100% { transform: translate(-50%,-50%) translateX(-110%) rotate(270deg); opacity: 1; }
   }
   @keyframes slowSpin {
     from { transform: rotate(0deg); }
@@ -315,14 +251,7 @@
 </head>
 <body>
 
-  <!-- Loading screen -->
-  <div class="loading-screen" id="loadingScreen">
-    <div class="loading-title">涅 槃 创 新</div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="loading-percent" id="loadingPercent">加载中 0%</div>
-  </div>
-
-  <!-- Entry screen (hidden until loaded) -->
+  <!-- Entry screen: pure CSS, no external resources, instant render -->
   <div class="entry" id="entry">
     <div class="entry-title">涅 槃 创 新</div>
     <div class="entry-btn">点 击 进 入</div>
@@ -331,7 +260,7 @@
 
   <!-- Main content -->
   <div class="main-content" id="main">
-    <div class="bg"></div>
+    <div class="bg" id="bg"></div>
 
     <div class="stage">
       <div class="spin-wrapper">
@@ -339,25 +268,25 @@
         <div class="flower flower-right"></div>
         <div class="flower flower-bottom"></div>
         <div class="flower flower-left"></div>
-        <div class="birds"></div>
-        <div class="disc"></div>
+        <div class="layer birds"></div>
+        <div class="layer disc"></div>
       </div>
     </div>
 
     <div class="poster poster-tl">
-      <img src="assets/poster1.jpg" alt="巫韵祈天" loading="lazy">
+      <img data-src="assets/poster1.jpg" alt="巫韵祈天">
       <div class="caption">巫韵祈天 — 巫风浪漫，崇尚自由</div>
     </div>
     <div class="poster poster-tr">
-      <img src="assets/poster2.jpg" alt="涅槃创新" loading="lazy">
+      <img data-src="assets/poster2.jpg" alt="涅槃创新">
       <div class="caption">涅槃创新 — 凤凰涅槃，传承创新</div>
     </div>
     <div class="poster poster-bl">
-      <img src="assets/poster3.jpg" alt="飨神祈年" loading="lazy">
+      <img data-src="assets/poster3.jpg" alt="飨神祈年">
       <div class="caption">飨神祈年 — 祭祀舞韵，通天达地</div>
     </div>
     <div class="poster poster-br">
-      <img src="assets/poster4.jpg" alt="寿春楚韵" loading="lazy">
+      <img data-src="assets/poster4.jpg" alt="寿春楚韵">
       <div class="caption">寿春楚韵 — 尚和贵诚，天人合一</div>
     </div>
 
@@ -366,144 +295,108 @@
     <div class="loading-hint">纹样绽放中...</div>
   </div>
 
-  <!-- Music toggle button -->
   <button class="music-btn" id="musicBtn" title="音乐开关">♫</button>
 
-  <!-- Audio -->
-  <audio id="bgm" loop preload="none">
-    <source src="assets/bgm.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="narration" preload="none">
-    <source src="assets/narration.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
-    const loadingScreen = document.getElementById('loadingScreen');
-    const progressFill = document.getElementById('progressFill');
-    const loadingPercent = document.getElementById('loadingPercent');
-    const entry = document.getElementById('entry');
-    const main = document.getElementById('main');
-    const bgm = document.getElementById('bgm');
-    const narration = document.getElementById('narration');
-    const musicBtn = document.getElementById('musicBtn');
-    let playing = false;
-    let audioMuted = false;
+    var entry = document.getElementById('entry');
+    var main = document.getElementById('main');
+    var bg = document.getElementById('bg');
+    var musicBtn = document.getElementById('musicBtn');
+    var playing = false;
+    var bgm, narration;
 
-    // ====== Preload critical resources ======
-    const criticalImages = [
-      'assets/bg.jpg',
-      'assets/disc.webp',
-      'assets/birds.webp',
-      'assets/flower.webp'
-    ];
-    const totalResources = criticalImages.length + 2; // +2 for bgm and narration audio
-    let loadedCount = 0;
+    // ====== Preload strategy: start loading in background immediately ======
+    // But don't block anything — entry screen is already visible
 
-    function updateProgress() {
-      loadedCount++;
-      const pct = Math.round((loadedCount / totalResources) * 100);
-      progressFill.style.width = pct + '%';
-      loadingPercent.textContent = '加载中 ' + pct + '%';
+    // Background image: preload and apply when ready
+    var bgImg = new Image();
+    bgImg.onload = function() { bg.classList.add('loaded'); };
+    bgImg.src = 'assets/bg.jpg';
 
-      if (loadedCount >= totalResources) {
-        // All critical resources loaded, show entry screen
-        setTimeout(() => {
-          loadingScreen.classList.add('hidden');
-          entry.classList.add('ready');
-          setTimeout(() => { loadingScreen.style.display = 'none'; }, 800);
-        }, 300);
-      }
-    }
-
-    // Preload images
-    criticalImages.forEach(src => {
-      const img = new Image();
-      img.onload = updateProgress;
-      img.onerror = updateProgress; // Don't block on error
+    // Core animation images: preload and set as background when ready
+    var layerMap = {
+      'assets/disc.webp': '.disc',
+      'assets/birds.webp': '.birds',
+      'assets/flower.webp': '.flower'
+    };
+    Object.keys(layerMap).forEach(function(src) {
+      var img = new Image();
+      img.onload = function() {
+        var els = document.querySelectorAll(layerMap[src]);
+        for (var i = 0; i < els.length; i++) {
+          els[i].style.backgroundImage = "url('" + src + "')";
+        }
+      };
       img.src = src;
     });
 
-    // Preload audio files
-    function preloadAudio(audioEl) {
-      audioEl.load();
-      const onReady = () => {
-        audioEl.removeEventListener('canplaythrough', onReady);
-        updateProgress();
-      };
-      audioEl.addEventListener('canplaythrough', onReady);
-      // Timeout fallback: if audio doesn't load in 5s, proceed anyway
-      setTimeout(() => {
-        audioEl.removeEventListener('canplaythrough', onReady);
-        updateProgress();
-      }, 5000);
-    }
-    preloadAudio(bgm);
-    preloadAudio(narration);
-
-    // Timeout fallback: if everything isn't loaded in 10s, show entry anyway
-    setTimeout(() => {
-      if (!entry.classList.contains('ready')) {
-        loadingScreen.classList.add('hidden');
-        entry.classList.add('ready');
-        setTimeout(() => { loadingScreen.style.display = 'none'; }, 800);
-      }
-    }, 10000);
-
-    // ====== Entry click ======
+    // ====== Entry click — no waiting ======
+    var entered = false;
     function enterMain() {
+      if (entered) return;
+      entered = true;
+
       entry.classList.add('hidden');
       main.classList.add('active');
       musicBtn.classList.add('show');
 
-      // Play BGM
+      // Create audio elements on demand (saves initial load time)
+      bgm = new Audio('assets/bgm.mp3');
+      bgm.loop = true;
       bgm.volume = 0.35;
-      const p = bgm.play();
-      if (p) {
-        p.then(() => {
-          playing = true;
-          musicBtn.classList.add('playing');
-        }).catch(() => {
-          setTimeout(() => {
-            bgm.play().then(() => {
-              playing = true;
-              musicBtn.classList.add('playing');
-            }).catch(() => {});
-          }, 500);
-        });
-      }
+      bgm.play().then(function() {
+        playing = true;
+        musicBtn.classList.add('playing');
+      }).catch(function() {
+        setTimeout(function() {
+          bgm.play().then(function() {
+            playing = true;
+            musicBtn.classList.add('playing');
+          }).catch(function() {});
+        }, 500);
+      });
 
-      // Play narration after 1.5s delay
-      setTimeout(() => {
+      // Narration after 1.5s
+      setTimeout(function() {
+        narration = new Audio('assets/narration.mp3');
         narration.volume = 0.9;
-        narration.play().catch(() => {});
+        narration.play().catch(function() {});
       }, 1500);
 
-      setTimeout(() => { entry.style.display = 'none'; }, 1000);
+      // Lazy load posters (they appear at 5.5s+ anyway)
+      setTimeout(function() {
+        var imgs = document.querySelectorAll('.poster img[data-src]');
+        for (var i = 0; i < imgs.length; i++) {
+          imgs[i].src = imgs[i].getAttribute('data-src');
+        }
+      }, 2000);
+
+      setTimeout(function() { entry.style.display = 'none'; }, 800);
     }
 
     entry.addEventListener('click', enterMain);
-    entry.addEventListener('touchend', (e) => {
+    entry.addEventListener('touchend', function(e) {
       e.preventDefault();
       enterMain();
-    }, { once: true });
+    });
 
-    // ====== Music toggle (controls both BGM and narration) ======
-    musicBtn.addEventListener('click', () => {
+    // ====== Music toggle ======
+    musicBtn.addEventListener('click', function() {
+      if (!bgm) return;
       if (playing) {
         bgm.pause();
-        narration.pause();
+        if (narration) narration.pause();
         playing = false;
         musicBtn.classList.remove('playing');
-        musicBtn.textContent = '♪';
+        musicBtn.textContent = '\u266A';
       } else {
         bgm.play();
-        // Only resume narration if it hasn't finished
-        if (narration.currentTime < narration.duration) {
-          narration.play().catch(() => {});
+        if (narration && narration.currentTime < narration.duration) {
+          narration.play().catch(function() {});
         }
         playing = true;
         musicBtn.classList.add('playing');
-        musicBtn.textContent = '♫';
+        musicBtn.textContent = '\u266B';
       }
     });
   </script>
