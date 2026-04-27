@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta http-equiv="refresh" content="0;url=https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/index.html">
 <title>涅槃创新 — 寿县楚文化博物馆</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,18 +16,18 @@
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   }
 
-  /* ====== Entry Screen (no external resources, instant display) ====== */
+  /* ====== Entry Screen ====== */
   .entry {
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: radial-gradient(ellipse at center, #1a1510 0%, #000 70%);
+    background: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 0.8s;
+    transition: opacity 1s;
   }
   .entry.hidden {
     opacity: 0;
@@ -59,22 +60,20 @@
     50% { opacity: 1; transform: scale(1.05); }
   }
 
-  /* ====== Main content ====== */
+  /* ====== Main content (paused until entry click) ====== */
   .main-content { visibility: hidden; }
   .main-content.active { visibility: visible; }
 
+  /* -- Background -- */
   .bg {
     position: fixed;
     inset: 0;
-    /* CSS gradient fallback while bg.jpg loads */
-    background: radial-gradient(ellipse at center, #1a1510 0%, #0a0806 50%, #000 100%);
+    background: url('https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/bg.jpg') center/cover no-repeat;
     opacity: 0;
-  }
-  .bg.loaded {
-    background: url('assets/bg.jpg') center/cover no-repeat;
   }
   .active .bg { animation: fadeIn 1.5s 0.3s forwards; }
 
+  /* -- Stage -- */
   .stage {
     position: fixed;
     top: 50%; left: 50%;
@@ -91,38 +90,55 @@
   }
   .active .spin-wrapper { animation: slowSpin 30s linear 5s infinite; }
 
-  .layer {
+  .disc {
     position: absolute;
+    width: 28%; height: 28%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: url('https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/disc.png') center/contain no-repeat;
+    z-index: 3;
   }
-  .disc { width: 28%; height: 28%; z-index: 3; }
   .active .disc { animation: popIn 1s 1s forwards; }
-  .birds { width: 58%; height: 58%; z-index: 2; }
+
+  .birds {
+    position: absolute;
+    width: 58%; height: 58%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: url('https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/birds.png') center/contain no-repeat;
+    z-index: 2;
+  }
   .active .birds { animation: popIn 1s 2s forwards; }
 
   .flower {
     position: absolute;
     width: 32%; height: 32%;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: url('https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/flower.png') center/contain no-repeat;
     opacity: 0;
     z-index: 1;
   }
-  .flower-top    { top: 50%; left: 50%; transform: translate(-50%,-50%) translateY(-200%); }
-  .flower-right  { top: 50%; left: 50%; transform: translate(-50%,-50%) translateX(200%) rotate(90deg); }
-  .flower-bottom { top: 50%; left: 50%; transform: translate(-50%,-50%) translateY(200%) rotate(180deg); }
-  .flower-left   { top: 50%; left: 50%; transform: translate(-50%,-50%) translateX(-200%) rotate(270deg); }
-  .active .flower-top    { animation: flyFromTop 1.2s 3s forwards; }
-  .active .flower-right  { animation: flyFromRight 1.2s 3s forwards; }
+  .flower-top {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateY(-200%) rotate(0deg);
+  }
+  .flower-right {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateX(200%) rotate(90deg);
+  }
+  .flower-bottom {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateY(200%) rotate(180deg);
+  }
+  .flower-left {
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateX(-200%) rotate(270deg);
+  }
+  .active .flower-top { animation: flyFromTop 1.2s 3s forwards; }
+  .active .flower-right { animation: flyFromRight 1.2s 3s forwards; }
   .active .flower-bottom { animation: flyFromBottom 1.2s 3s forwards; }
-  .active .flower-left   { animation: flyFromLeft 1.2s 3s forwards; }
+  .active .flower-left { animation: flyFromLeft 1.2s 3s forwards; }
 
-  /* ====== Posters ====== */
+  /* ====== Four corner posters ====== */
   .poster {
     position: fixed;
     z-index: 5;
@@ -130,7 +146,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 18vmin;
   }
   .poster img {
     width: 100%;
@@ -146,10 +161,13 @@
     line-height: 1.4;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
   }
+  .poster { width: 18vmin; }
+
   .poster-tl { top: 6vh; left: 5vw; }
   .poster-tr { top: 6vh; right: 5vw; }
   .poster-bl { bottom: 6vh; left: 5vw; }
   .poster-br { bottom: 6vh; right: 5vw; }
+
   .active .poster-tl { animation: fadeIn 0.8s 5.5s forwards; }
   .active .poster-tr { animation: fadeIn 0.8s 6s forwards; }
   .active .poster-bl { animation: fadeIn 0.8s 6.5s forwards; }
@@ -163,6 +181,7 @@
     .poster-br { bottom: 5vh; right: 6vw; }
   }
 
+  /* -- Text overlays -- */
   .title {
     position: fixed;
     top: 2vh; left: 50%;
@@ -201,6 +220,7 @@
   }
   .active .loading-hint { animation: fadeIn 1s 0.5s forwards, fadeOut 1s 4.5s forwards; }
 
+  /* -- Music button -- */
   .music-btn {
     position: fixed;
     bottom: 12px; right: 12px;
@@ -220,28 +240,29 @@
   .music-btn.playing { animation: spin 3s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ====== Keyframes ====== */
   @keyframes fadeIn { to { opacity: 1; } }
   @keyframes fadeOut { to { opacity: 0; } }
   @keyframes popIn {
-    0%   { transform: translate(-50%,-50%) scale(0); opacity: 0; }
-    60%  { transform: translate(-50%,-50%) scale(1.08); opacity: 1; }
-    100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+    0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    60%  { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
   }
   @keyframes flyFromTop {
-    0%   { transform: translate(-50%,-50%) translateY(-200%); opacity: 0; }
-    100% { transform: translate(-50%,-50%) translateY(-110%); opacity: 1; }
+    0%   { transform: translate(-50%, -50%) translateY(-200%) rotate(0deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateY(-110%) rotate(0deg); opacity: 1; }
   }
   @keyframes flyFromRight {
-    0%   { transform: translate(-50%,-50%) translateX(200%) rotate(90deg); opacity: 0; }
-    100% { transform: translate(-50%,-50%) translateX(110%) rotate(90deg); opacity: 1; }
+    0%   { transform: translate(-50%, -50%) translateX(200%) rotate(90deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateX(110%) rotate(90deg); opacity: 1; }
   }
   @keyframes flyFromBottom {
-    0%   { transform: translate(-50%,-50%) translateY(200%) rotate(180deg); opacity: 0; }
-    100% { transform: translate(-50%,-50%) translateY(110%) rotate(180deg); opacity: 1; }
+    0%   { transform: translate(-50%, -50%) translateY(200%) rotate(180deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateY(110%) rotate(180deg); opacity: 1; }
   }
   @keyframes flyFromLeft {
-    0%   { transform: translate(-50%,-50%) translateX(-200%) rotate(270deg); opacity: 0; }
-    100% { transform: translate(-50%,-50%) translateX(-110%) rotate(270deg); opacity: 1; }
+    0%   { transform: translate(-50%, -50%) translateX(-200%) rotate(270deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) translateX(-110%) rotate(270deg); opacity: 1; }
   }
   @keyframes slowSpin {
     from { transform: rotate(0deg); }
@@ -251,7 +272,7 @@
 </head>
 <body>
 
-  <!-- Entry screen: pure CSS, no external resources, instant render -->
+  <!-- Entry screen -->
   <div class="entry" id="entry">
     <div class="entry-title">涅 槃 创 新</div>
     <div class="entry-btn">点 击 进 入</div>
@@ -260,7 +281,7 @@
 
   <!-- Main content -->
   <div class="main-content" id="main">
-    <div class="bg" id="bg"></div>
+    <div class="bg"></div>
 
     <div class="stage">
       <div class="spin-wrapper">
@@ -268,25 +289,25 @@
         <div class="flower flower-right"></div>
         <div class="flower flower-bottom"></div>
         <div class="flower flower-left"></div>
-        <div class="layer birds"></div>
-        <div class="layer disc"></div>
+        <div class="birds"></div>
+        <div class="disc"></div>
       </div>
     </div>
 
     <div class="poster poster-tl">
-      <img data-src="assets/poster1.jpg" alt="巫韵祈天">
+      <img src="https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/poster1.jpg" alt="巫韵祈天">
       <div class="caption">巫韵祈天 — 巫风浪漫，崇尚自由</div>
     </div>
     <div class="poster poster-tr">
-      <img data-src="assets/poster2.jpg" alt="涅槃创新">
+      <img src="https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/poster2.jpg" alt="涅槃创新">
       <div class="caption">涅槃创新 — 凤凰涅槃，传承创新</div>
     </div>
     <div class="poster poster-bl">
-      <img data-src="assets/poster3.jpg" alt="飨神祈年">
+      <img src="https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/poster3.jpg" alt="飨神祈年">
       <div class="caption">飨神祈年 — 祭祀舞韵，通天达地</div>
     </div>
     <div class="poster poster-br">
-      <img data-src="assets/poster4.jpg" alt="寿春楚韵">
+      <img src="https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/poster4.jpg" alt="寿春楚韵">
       <div class="caption">寿春楚韵 — 尚和贵诚，天人合一</div>
     </div>
 
@@ -295,83 +316,59 @@
     <div class="loading-hint">纹样绽放中...</div>
   </div>
 
+  <!-- Music toggle button -->
   <button class="music-btn" id="musicBtn" title="音乐开关">♫</button>
+
+  <!-- Audio -->
+  <audio id="bgm" loop preload="auto">
+    <source src="https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/bgm.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="narration" preload="auto">
+    <source src="https://chu-culture-vr-1409444054.cos.ap-shanghai.myqcloud.com/assets/narration.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     var entry = document.getElementById('entry');
     var main = document.getElementById('main');
-    var bg = document.getElementById('bg');
+    var bgm = document.getElementById('bgm');
+    var narration = document.getElementById('narration');
     var musicBtn = document.getElementById('musicBtn');
     var playing = false;
-    var bgm, narration;
-
-    // ====== Preload strategy: start loading in background immediately ======
-    // But don't block anything — entry screen is already visible
-
-    // Background image: preload and apply when ready
-    var bgImg = new Image();
-    bgImg.onload = function() { bg.classList.add('loaded'); };
-    bgImg.src = 'assets/bg.jpg';
-
-    // Core animation images: preload and set as background when ready
-    var layerMap = {
-      'assets/disc.webp': '.disc',
-      'assets/birds.webp': '.birds',
-      'assets/flower.webp': '.flower'
-    };
-    Object.keys(layerMap).forEach(function(src) {
-      var img = new Image();
-      img.onload = function() {
-        var els = document.querySelectorAll(layerMap[src]);
-        for (var i = 0; i < els.length; i++) {
-          els[i].style.backgroundImage = "url('" + src + "')";
-        }
-      };
-      img.src = src;
-    });
-
-    // ====== Entry click — no waiting ======
     var entered = false;
-    function enterMain() {
-      if (entered) return;
-      entered = true;
 
-      entry.classList.add('hidden');
-      main.classList.add('active');
-      musicBtn.classList.add('show');
-
-      // Create audio elements on demand (saves initial load time)
-      bgm = new Audio('assets/bgm.mp3');
-      bgm.loop = true;
+    function unlockAudio() {
+      bgm.load();
       bgm.volume = 0.35;
-      bgm.play().then(function() {
-        playing = true;
-        musicBtn.classList.add('playing');
-      }).catch(function() {
-        setTimeout(function() {
-          bgm.play().then(function() {
-            playing = true;
-            musicBtn.classList.add('playing');
-          }).catch(function() {});
-        }, 500);
-      });
+      var p = bgm.play();
+      if (p) {
+        p.then(function() {
+          playing = true;
+          musicBtn.classList.add('playing');
+        }).catch(function() {
+          setTimeout(function() {
+            bgm.play().then(function() {
+              playing = true;
+              musicBtn.classList.add('playing');
+            }).catch(function() {});
+          }, 500);
+        });
+      }
 
       // Narration after 1.5s
       setTimeout(function() {
-        narration = new Audio('assets/narration.mp3');
         narration.volume = 0.9;
         narration.play().catch(function() {});
       }, 1500);
+    }
 
-      // Lazy load posters (they appear at 5.5s+ anyway)
-      setTimeout(function() {
-        var imgs = document.querySelectorAll('.poster img[data-src]');
-        for (var i = 0; i < imgs.length; i++) {
-          imgs[i].src = imgs[i].getAttribute('data-src');
-        }
-      }, 2000);
-
-      setTimeout(function() { entry.style.display = 'none'; }, 800);
+    function enterMain() {
+      if (entered) return;
+      entered = true;
+      entry.classList.add('hidden');
+      main.classList.add('active');
+      musicBtn.classList.add('show');
+      unlockAudio();
+      setTimeout(function() { entry.style.display = 'none'; }, 1000);
     }
 
     entry.addEventListener('click', enterMain);
@@ -380,18 +377,16 @@
       enterMain();
     });
 
-    // ====== Music toggle ======
     musicBtn.addEventListener('click', function() {
-      if (!bgm) return;
       if (playing) {
         bgm.pause();
-        if (narration) narration.pause();
+        narration.pause();
         playing = false;
         musicBtn.classList.remove('playing');
         musicBtn.textContent = '\u266A';
       } else {
         bgm.play();
-        if (narration && narration.currentTime < narration.duration) {
+        if (narration.currentTime < narration.duration) {
           narration.play().catch(function() {});
         }
         playing = true;
